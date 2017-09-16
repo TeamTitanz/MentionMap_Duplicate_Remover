@@ -19,6 +19,7 @@ with open(currentPath + '/' + hashCheck) as hashfile:
 current = ""
 count = 0
 docList = []
+replacementList = []
 for hash in lines:
     print(str(count) + '/' + str(len(lines)))
     current = hash.split(" ")[0]
@@ -26,27 +27,37 @@ for hash in lines:
 
     docList.append(hash.split('.')[1].split('/')[1])
 
-    if count==len(lines) and lines[count].split(" ")[0] == current :
+    if count==len(lines) or lines[count].split(" ")[0] == current :
         continue
 
     else:
         if len(docList) == 1:
+            replacementList.append(docList[0])
             continue
         else:
             mainDocName = docList[0]
-            for i in range(1 , len(docList)):
-                f = open(currentPath + '/' + mentionMap, 'r')
-                filedata = f.read()
-                f.close()
-
-                newdata = filedata.replace(docList[i], mainDocName)
-
-                f = open(currentPath + '/' + mentionMap, 'w')
-                f.write(newdata)
-                f.close()
+            replacements = ','.join(docList[1:])
+            # for i in range(1 , len(docList)):
+                # f = open(currentPath + '/' + mentionMap, 'r')
+                # filedata = f.read()
+                # f.close()
+                #
+                # newdata = filedata.replace(docList[i], mainDocName)
+                #
+                # f = open(currentPath + '/' + mentionMap, 'w')
+                # f.write(newdata)
+                # f.close()
             docList = []
+            replacementList.append(mainDocName + ':' + replacements)
 
 
+# create new file to add non empty entries
+f = open('backwardsMap.txt', 'w')
+
+for line in replacementList:
+    print(line, file=f)
+
+f.close()
 # test ='0008ff4af56a853493844eebdc186046  ./0010001200.txt'
 # print(test.split('.')[1].split('/')[1])
 # print(test.split(" ")[0])
